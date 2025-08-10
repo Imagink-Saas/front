@@ -42,9 +42,8 @@ class PaymentService {
         const errorData = await response.json();
         if (errorData?.error) errorMsg += `: ${errorData.error}`;
         if (errorData?.details) errorMsg += ` (${errorData.details})`;
-      } catch (e) {
+      } catch {
         // ignore, fallback to default error
-        console.log(e);
       }
       throw new Error(errorMsg);
     }
@@ -82,8 +81,8 @@ class PaymentService {
         const errorData = await response.json();
         if (errorData?.error) errorMsg += `: ${errorData.error}`;
         if (errorData?.details) errorMsg += ` (${errorData.details})`;
-      } catch (e) {
-        console.log(e);
+      } catch {
+        // ignore, fallback to default error
       }
       throw new Error(errorMsg);
     }
@@ -114,8 +113,8 @@ class PaymentService {
         const errorData = await response.json();
         if (errorData?.error) errorMsg += `: ${errorData.error}`;
         if (errorData?.details) errorMsg += ` (${errorData.details})`;
-      } catch (e) {
-        console.error("Error creating payment session:", e);
+      } catch {
+        // ignore, fallback to default error
       }
       throw new Error(errorMsg);
     }
