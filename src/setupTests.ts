@@ -47,12 +47,19 @@ beforeAll(() => {
       msg.includes("Received `true` for a non-boolean attribute `priority`") ||
       msg.includes("Received `true` for a non-boolean attribute `sizes`");
 
-    // 5) Autres messages de test à ignorer
+    // 6) Erreurs d'hydratation React causées par des tests (html dans div)
+    const isHydrationError =
+      msg.includes("In HTML, <html> cannot be a child of <div>") ||
+      msg.includes("This will cause a hydration error") ||
+      msg.includes("validateDOMNesting");
+
+    // 7) Autres messages de test à ignorer
     const shouldIgnore =
       isActWarning ||
       isNetworkError ||
       isStyledJsxWarning ||
-      isNextImageWarning;
+      isNextImageWarning ||
+      isHydrationError;
 
     if (shouldIgnore) {
       return; // NE PAS rappeler originalError => silence total
