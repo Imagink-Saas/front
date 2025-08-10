@@ -42,6 +42,7 @@ export default function ProductFilters({
         <div className="relative flex-1">
           <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
+            data-testid="search-input"
             type="text"
             placeholder="Rechercher par nom, marque ou modèle..."
             value={searchQuery}
@@ -126,6 +127,7 @@ export default function ProductFilters({
             <div className="flex space-x-3">
               {hasActiveFilters && (
                 <button
+                  data-testid="clear-filters"
                   onClick={onClearFilters}
                   className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
                 >

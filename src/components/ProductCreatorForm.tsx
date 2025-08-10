@@ -221,11 +221,25 @@ export default function ProductCreatorForm({
   const variantsByColor = printifyService.groupVariantsByColor(variants);
   const availableColors = Object.keys(variantsByColor);
 
+  // Vérifier que selectedImage existe
+  if (!selectedImage) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 text-lg">Aucune image sélectionnée</p>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <FiLoader className="animate-spin text-4xl text-blue-600 mx-auto mb-4" />
+          <FiLoader
+            data-testid="loading-spinner"
+            className="animate-spin text-4xl text-blue-600 mx-auto mb-4"
+          />
           <p className="text-gray-600">
             Chargement des produits disponibles...
           </p>
@@ -371,7 +385,7 @@ export default function ProductCreatorForm({
                       {totalItems} produit{totalItems > 1 ? "s" : ""} trouvé
                       {totalItems > 1 ? "s" : ""}
                     </span>
-                    <span>
+                    <span data-testid="page-info">
                       Page {currentPage} sur {totalPages}
                     </span>
                   </div>
@@ -573,6 +587,7 @@ export default function ProductCreatorForm({
                     </p>
                   </div>
                   <button
+                    data-testid="create-product-button"
                     onClick={handleCreateProduct}
                     disabled={creating}
                     className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"

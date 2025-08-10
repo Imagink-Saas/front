@@ -66,10 +66,13 @@ export default function Pagination({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+    <div
+      data-testid="pagination"
+      className="flex flex-col sm:flex-row justify-between items-center gap-4"
+    >
       {/* Informations sur les éléments affichés */}
       {showInfo && (
-        <div className="text-sm text-gray-600">
+        <div data-testid="page-info" className="text-sm text-gray-600">
           Affichage de {startItem} à {endItem} sur {totalItems} résultat
           {totalItems > 1 ? "s" : ""}
         </div>
@@ -125,6 +128,7 @@ export default function Pagination({
 
         {/* Bouton Suivant */}
         <button
+          data-testid="next-page"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
           className="flex items-center px-3 py-2 text-sm border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
