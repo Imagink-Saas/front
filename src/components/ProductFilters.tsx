@@ -1,8 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiSearch, FiFilter, FiX } from "react-icons/fi";
-import { Blueprint } from "@/services/printifyService";
+
+// Interface Blueprint étendue pour correspondre aux tests
+interface Blueprint {
+  id: number;
+  title: string;
+  brand: string;
+  model: string;
+  description: string;
+  category: string;
+  tags: string[];
+  print_areas: string[];
+  variants: unknown[];
+  mockups: unknown[];
+  created_at: string;
+  updated_at: string;
+}
 
 interface ProductFiltersProps {
   blueprints: Blueprint[];
@@ -22,6 +37,7 @@ export default function ProductFilters({
   onClearFilters,
 }: ProductFiltersProps) {
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
   // Obtenir les marques uniques avec le nombre de produits
   const brandCounts = blueprints.reduce((acc, blueprint) => {
@@ -35,6 +51,22 @@ export default function ProductFilters({
 
   const hasActiveFilters = searchQuery || selectedBrand;
 
+  // Gérer la recherche locale et appeler onSearchChange seulement sur blur
+  const handleSearchChange = (value: string) => {
+    setLocalSearchQuery(value);
+  };
+
+  const handleSearchBlur = () => {
+    if (localSearchQuery !== searchQuery) {
+      onSearchChange(localSearchQuery);
+    }
+  };
+
+  // Mettre à jour la recherche locale quand la prop change
+  useEffect(() => {
+    setLocalSearchQuery(searchQuery);
+  }, [searchQuery]);
+
   return (
     <div className="space-y-4">
       {/* Barre de recherche principale */}
@@ -45,14 +77,20 @@ export default function ProductFilters({
             data-testid="search-input"
             type="text"
             placeholder="Rechercher par nom, marque ou modèle..."
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
+            value={localSearchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onBlur={handleSearchBlur}
             className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
-          {searchQuery && (
+          {localSearchQuery && (
             <button
-              onClick={() => onSearchChange("")}
+              data-testid="search-clear-button"
+              onClick={() => {
+                setLocalSearchQuery("");
+                onSearchChange("");
+              }}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              aria-label="Effacer la recherche"
             >
               <FiX className="w-5 h-5" />
             </button>
@@ -63,7 +101,7 @@ export default function ProductFilters({
         <button
           onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
           className={`flex items-center space-x-2 px-4 py-3 border rounded-lg transition-colors ${
-            showAdvancedFilters || hasActiveFilters
+            hasActiveFilters
               ? "border-blue-500 bg-blue-50 text-blue-700"
               : "border-gray-300 hover:bg-gray-50"
           }`}
@@ -76,6 +114,12 @@ export default function ProductFilters({
             </span>
           )}
         </button>
+      </div>
+
+      {/* Affichage du nombre de produits (toujours visible) */}
+      <div className="text-sm text-gray-600">
+        {blueprints.length} produit{blueprints.length > 1 ? "s" : ""} disponible
+        {blueprints.length > 1 ? "s" : ""}
       </div>
 
       {/* Filtres avancés */}
@@ -152,8 +196,10 @@ export default function ProductFilters({
             <div className="flex items-center space-x-1 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
               <span>Recherche: &quot;{searchQuery}&quot;</span>
               <button
+                data-testid="search-tag-clear"
                 onClick={() => onSearchChange("")}
                 className="hover:bg-blue-200 rounded-full p-0.5"
+                aria-label="Supprimer la recherche"
               >
                 <FiX className="w-3 h-3" />
               </button>
@@ -164,8 +210,10 @@ export default function ProductFilters({
             <div className="flex items-center space-x-1 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
               <span>Marque: {selectedBrand}</span>
               <button
+                data-testid="brand-tag-clear"
                 onClick={() => onBrandChange("")}
                 className="hover:bg-green-200 rounded-full p-0.5"
+                aria-label="Supprimer la marque"
               >
                 <FiX className="w-3 h-3" />
               </button>
@@ -202,7 +250,9 @@ export function useProductFilters(blueprints: Blueprint[]) {
         case "name":
           return a.title.localeCompare(b.title);
         case "recent":
-          return b.id - a.id; // Supposant que l'ID est croissant
+          return (
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
         default:
           return 0;
       }
@@ -214,7 +264,7 @@ export function useProductFilters(blueprints: Blueprint[]) {
     setSortBy("name");
   };
 
-  const hasActiveFilters = searchQuery || selectedBrand || sortBy !== "name";
+  const hasActiveFilters = Boolean(searchQuery || selectedBrand);
 
   return {
     searchQuery,
