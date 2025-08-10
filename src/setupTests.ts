@@ -41,8 +41,14 @@ beforeAll(() => {
       msg.includes("jsx") ||
       msg.includes("global");
 
-    // 4) Autres messages de test à ignorer
-    const shouldIgnore = isActWarning || isNetworkError || isStyledJsxWarning;
+    // 4) Avertissements Next.js Image component attributes - SUPPRIMER
+    const isNextImageWarning =
+      msg.includes("Received `true` for a non-boolean attribute `fill`") ||
+      msg.includes("Received `true` for a non-boolean attribute `priority`") ||
+      msg.includes("Received `true` for a non-boolean attribute `sizes`");
+
+    // 5) Autres messages de test à ignorer
+    const shouldIgnore = isActWarning || isNetworkError || isStyledJsxWarning || isNextImageWarning;
 
     if (shouldIgnore) {
       return; // NE PAS rappeler originalError => silence total
