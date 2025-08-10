@@ -48,7 +48,11 @@ beforeAll(() => {
       msg.includes("Received `true` for a non-boolean attribute `sizes`");
 
     // 5) Autres messages de test à ignorer
-    const shouldIgnore = isActWarning || isNetworkError || isStyledJsxWarning || isNextImageWarning;
+    const shouldIgnore =
+      isActWarning ||
+      isNetworkError ||
+      isStyledJsxWarning ||
+      isNextImageWarning;
 
     if (shouldIgnore) {
       return; // NE PAS rappeler originalError => silence total
