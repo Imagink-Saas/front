@@ -365,22 +365,17 @@ describe("ProductCreatorForm", () => {
         />
       );
 
-      await waitFor(async () => {
-        // Attendre que les blueprints soient chargés
-        await screen.findByText("T-shirt Premium");
+      // Attendre que les blueprints soient chargés
+      await screen.findByText("T-shirt Premium");
 
-        // Cliquer sur un blueprint pour déclencher le chargement des providers
-        const blueprintButton = screen
-          .getByText("T-shirt Premium")
-          .closest("button");
-        fireEvent.click(blueprintButton!);
+      // Cliquer sur un blueprint pour déclencher le chargement des providers
+      const blueprintButton = screen
+        .getByText("T-shirt Premium")
+        .closest("button");
+      fireEvent.click(blueprintButton!);
 
-        await waitFor(() => {
-          expect(
-            screen.getByText("Erreur lors du chargement des fournisseurs")
-          ).toBeInTheDocument();
-        });
-      });
+      // Attendre l'erreur
+      await screen.findByText("Erreur lors du chargement des fournisseurs");
     });
 
     it("affiche une erreur si le chargement des variants échoue", async () => {
@@ -395,29 +390,24 @@ describe("ProductCreatorForm", () => {
         />
       );
 
-      await waitFor(async () => {
-        // Attendre que les blueprints soient chargés
-        await screen.findByText("T-shirt Premium");
+      // Attendre que les blueprints soient chargés
+      await screen.findByText("T-shirt Premium");
 
-        // Sélectionner un blueprint
-        const blueprintButton = screen
-          .getByText("T-shirt Premium")
-          .closest("button");
-        fireEvent.click(blueprintButton!);
+      // Sélectionner un blueprint
+      const blueprintButton = screen
+        .getByText("T-shirt Premium")
+        .closest("button");
+      fireEvent.click(blueprintButton!);
 
-        // Attendre que les providers soient chargés
-        await screen.findByText("Provider A");
+      // Attendre que les providers soient chargés
+      await screen.findByText("Provider A");
 
-        // Sélectionner un provider
-        const providerButton = screen.getByText("Provider A").closest("button");
-        fireEvent.click(providerButton!);
+      // Sélectionner un provider
+      const providerButton = screen.getByText("Provider A").closest("button");
+      fireEvent.click(providerButton!);
 
-        await waitFor(() => {
-          expect(
-            screen.getByText("Erreur lors du chargement des variants")
-          ).toBeInTheDocument();
-        });
-      });
+      // Attendre l'erreur
+      await screen.findByText("Erreur lors du chargement des variants");
     });
   });
 

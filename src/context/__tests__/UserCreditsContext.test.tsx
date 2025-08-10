@@ -44,9 +44,21 @@ describe("UserCreditsContext", () => {
   >;
   const mockUseUser = require("@clerk/nextjs").useUser as jest.Mock;
 
+  // Helper pour créer des mocks UserCredits valides
+  const createMockUserCredits = (
+    credits: number,
+    userId: string = "user123"
+  ) => ({
+    userId,
+    credits,
+    canGenerate: credits > 0,
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
-    mockPaymentService.getUserCredits.mockResolvedValue({ credits: 10 });
+    mockPaymentService.getUserCredits.mockResolvedValue(
+      createMockUserCredits(10)
+    );
   });
 
   describe("Rendu initial", () => {
@@ -62,15 +74,14 @@ describe("UserCreditsContext", () => {
 
     it("charge automatiquement les crédits au montage", async () => {
       mockUseUser.mockReturnValue({ user: { id: "user123" } });
-      mockPaymentService.getUserCredits.mockResolvedValue({ credits: 25 });
+      mockPaymentService.getUserCredits.mockResolvedValue(
+        createMockUserCredits(25)
+      );
 
       renderWithProvider(<TestComponent />);
 
-      await waitFor(() => {
-        expect(screen.getByTestId("credits-display")).toHaveTextContent(
-          "Crédits: 25"
-        );
-      });
+      // Attendre que les crédits soient chargés
+      await screen.findByText("Crédits: 25");
     });
   });
 
@@ -101,7 +112,9 @@ describe("UserCreditsContext", () => {
 
       // Utilisateur se connecte
       mockUseUser.mockReturnValue({ user: { id: "user123" } });
-      mockPaymentService.getUserCredits.mockResolvedValue({ credits: 15 });
+      mockPaymentService.getUserCredits.mockResolvedValue(
+        createMockUserCredits(15)
+      );
 
       rerender(
         <UserCreditsProvider>
@@ -237,7 +250,9 @@ describe("UserCreditsContext", () => {
 
     it("ne fait pas d'appels inutiles à l'API", async () => {
       mockUseUser.mockReturnValue({ user: { id: "user123" } });
-      mockPaymentService.getUserCredits.mockResolvedValue({ credits: 10 });
+      mockPaymentService.getUserCredits.mockResolvedValue(
+        createMockUserCredits(10)
+      );
 
       renderWithProvider(<TestComponent />);
 
