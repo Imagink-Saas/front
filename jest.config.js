@@ -30,6 +30,14 @@ const config = {
   ],
   coverageDirectory: "<rootDir>/coverage",
   coverageProvider: "v8",
+  // Supprimer les avertissements de console spécifiques
+  silent: false,
+  verbose: false,
+  // Configuration pour supprimer les avertissements styled-jsx
+  setupFilesAfterEnv: [
+    "<rootDir>/jest.setup.ts",
+    "<rootDir>/src/setupTests.ts",
+  ],
 };
 
 module.exports = config;

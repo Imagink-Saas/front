@@ -34,8 +34,15 @@ beforeAll(() => {
       msg.includes("Token Clerk null") ||
       msg.includes("Aucun token Clerk disponible");
 
-    // 3) Autres messages de test à ignorer
-    const shouldIgnore = isActWarning || isNetworkError;
+    // 3) Avertissements styled-jsx (jsx et global props) - SUPPRIMER COMPLÈTEMENT
+    const isStyledJsxWarning =
+      msg.includes("Received `true` for a non-boolean attribute `jsx`") ||
+      msg.includes("Received `true` for a non-boolean attribute `global`") ||
+      msg.includes("jsx") ||
+      msg.includes("global");
+
+    // 4) Autres messages de test à ignorer
+    const shouldIgnore = isActWarning || isNetworkError || isStyledJsxWarning;
 
     if (shouldIgnore) {
       return; // NE PAS rappeler originalError => silence total

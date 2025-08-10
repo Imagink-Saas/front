@@ -92,6 +92,7 @@ const Header = () => {
               <Link
                 href="/sign-in"
                 className="hidden sm:block text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                data-testid="signin-button-desktop"
               >
                 Connexion
               </Link>
@@ -100,6 +101,7 @@ const Header = () => {
               <Link
                 href="/sign-in"
                 className="sm:hidden bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                data-testid="signin-button-mobile"
               >
                 Connexion
               </Link>
