@@ -39,49 +39,49 @@
 ## 🔗 Repositories des Services
 
 ### 🎨 Frontend (Ce repository)
-- **Repository** : [front-MalicknND](https://github.com/zkerkeb-class/front-MalicknND)
+- **Repository** : [front](https://github.com/Imagink-Saas/front)
 - **Technologies** : Next.js 15, React 19, Tailwind CSS, Clerk
 - **Port** : 3000
 - **Description** : Interface utilisateur moderne pour la génération d'images et la gestion des produits
 
 ### 🤖 Service IA - Génération d'Images
-- **Repository** : [service-ia-MalicknND](https://github.com/zkerkeb-class/service-ia-MalicknND)
+- **Repository** : [ia-service](https://github.com/Imagink-Saas/ia-service)
 - **Technologies** : Node.js, Express, Stability AI API
 - **Port** : 9000
 - **Description** : Service de génération d'images avec Stable Diffusion 3.5 Large
 
 ### 🖼️ Service Images - Stockage
-- **Repository** : [image-service-MalicknND](https://github.com/MalicknND/image-service-MalicknND)
+- **Repository** : [image-service](https://github.com/Imagink-Saas/image-service)
 - **Technologies** : Node.js, Express, Supabase Storage
 - **Port** : 5002
 - **Description** : Gestion et stockage des images générées par IA
 
 ### 🗄️ Service BDD - Base de Données
-- **Repository** : [bdd-services-MalicknND](https://github.com/zkerkeb-class/bdd-services-MalicknND)
+- **Repository** : [Bdd-service](https://github.com/Imagink-Saas/Bdd-service)
 - **Technologies** : Node.js, Express, PostgreSQL, Prisma ORM
 - **Port** : 9002
 - **Description** : Service de base de données centralisée pour les métadonnées
 
 ### 🎨 Service Printify - Print-on-Demand
-- **Repository** : [printify-service-MalicknND](https://github.com/zkerkeb-class/printify-service-MalicknND)
+- **Repository** : [printify-service](https://github.com/Imagink-Saas/printify-service)
 - **Technologies** : Node.js, Express, Printify API
 - **Port** : 3004
 - **Description** : Création de produits personnalisés via Printify
 
 ### 💳 Service Payment - Paiements
-- **Repository** : [payment-services-MalicknND](https://github.com/zkerkeb-class/payment-services-MalicknND)
+- **Repository** : [payment-service](https://github.com/Imagink-Saas/payment-service)
 - **Technologies** : Node.js, Express, Stripe
 - **Port** : 9001
 - **Description** : Gestion des paiements et système de crédits
 
 ### 📧 Service Notifications
-- **Repository** : [notification-mail-sms-service-MalicknND](https://github.com/zkerkeb-class/notification-mail-sms-service-MalicknND)
+- **Repository** : [notifications-service](https://github.com/Imagink-Saas/notifications-service)
 - **Technologies** : Node.js, Express, Nodemailer, Clerk Webhooks
 - **Port** : 3005
 - **Description** : Notifications par email automatiques
 
 ### 📊 Service Métriques (Optionnel)
-- **Repository** : [metrics-service-MalicknND](https://github.com/zkerkeb-class/metrics-service-MalicknND)
+- **Repository** : [metrics-service](https://github.com/Imagink-Saas/metrics-service)
 - **Technologies** : Prometheus, Grafana
 - **Description** : Monitoring et métriques des services
 
@@ -149,8 +149,8 @@ npm run start:infisical
 
 #### **1. Cloner le repository**
 ```bash
-git clone https://github.com/zkerkeb-class/front-MalicknND.git
-cd front-MalicknND
+git clone https://github.com/Imagink-Saas/front.git
+cd front
 ```
 
 #### **2. Installer les dépendances**
