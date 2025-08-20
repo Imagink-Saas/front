@@ -97,108 +97,173 @@ Prompt    IA          Image         Métadonnées
 
 ### 2. **Création de Produit**
 ```
-Frontend → Service Printify → Service BDD
-    ↓           ↓              ↓
-Sélection   Création      Enregistrement
-Image      Produit       Base données
+Frontend → Service Printify → Service BDD → Supabase
+    ↓           ↓              ↓           ↓
+Sélection  Création      Enregistrement  Stockage
+Image      Produit       Métadonnées     Fichiers
 ```
 
-### 3. **Achat de Crédits**
+### 3. **Système de Paiement**
 ```
-Frontend → Service Payment → Stripe → Webhook → Crédits
-    ↓           ↓           ↓         ↓         ↓
-Achat      Session      Paiement   Confirmation Ajout
+Frontend → Service Payment → Stripe → Webhook → Service BDD
+    ↓           ↓            ↓        ↓         ↓
+Achat      Création      Paiement  Confirmation Ajout
+Crédits    Session       Sécurisé  Automatique  Crédits
 ```
 
-## 🚀 Installation et Démarrage
+## 🚀 Installation & Configuration
 
-### Prérequis
-- Node.js 18+
-- npm ou yarn
-- Compte Clerk configuré
-- Clés API (Stability AI, Supabase, Printify, Stripe)
+### 🔐 **Configuration Infisical (Recommandé)**
 
-### Démarrage Rapide
+Le projet utilise **Infisical** pour la gestion sécurisée des variables d'environnement au lieu des fichiers `.env`.
+
+#### **1. Installer Infisical CLI**
 ```bash
-# 1. Cloner tous les repositories
+# macOS avec Homebrew
+brew install infisical
+
+# Ou avec npm
+npm install -g infisical
+```
+
+#### **2. Configurer le token Infisical**
+```bash
+# Définir le token Infisical pour ce projet
+export INFISICAL_TOKEN="st.72dc82a3-8735-438b-85fa-58f7c7d3cf8d.032a259cf84495e0717ee1998b13c078.ad1080a1dfa5c471ce65a36db60130e8"
+
+# Vérifier la configuration
+infisical secrets ls --env=dev --path=/front
+```
+
+#### **3. Démarrer le projet avec Infisical**
+```bash
+# Mode développement avec Infisical
+npm run dev:infisical
+
+# Mode production avec Infisical
+npm run build:infisical
+npm run start:infisical
+```
+
+### 🏠 **Installation standard**
+
+#### **1. Cloner le repository**
+```bash
 git clone https://github.com/zkerkeb-class/front-MalicknND.git
-git clone https://github.com/zkerkeb-class/service-ia-MalicknND.git
-git clone https://github.com/MalicknND/image-service-MalicknND.git
-git clone https://github.com/zkerkeb-class/bdd-services-MalicknND.git
-git clone https://github.com/zkerkeb-class/printify-service-MalicknND.git
-git clone https://github.com/zkerkeb-class/payment-services-MalicknND.git
-git clone https://github.com/zkerkeb-class/notification-mail-sms-service-MalicknND.git
-
-# 2. Démarrer tous les services
-./start-all.sh
-
-# 3. Ou arrêter tous les services
-./stop-all.sh
-```
-
-### Configuration Frontend
-```bash
 cd front-MalicknND
-
-# Installer les dépendances
-npm install
-
-# Configuration
-cp .env.example .env
 ```
 
-### Variables d'environnement Frontend
-```env
-# Clerk (Authentification)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
+#### **2. Installer les dépendances**
+```bash
+npm install
+```
 
-# Services Backend
+#### **3. Démarrer le projet**
+```bash
+# Mode développement
+npm run dev
+
+# Mode production
+npm run build
+npm run start
+```
+
+Le frontend sera accessible sur `http://localhost:3000`
+
+## ⚙️ **Variables d'Environnement (Infisical)**
+
+### **🔧 Variables requises dans Infisical**
+
+```bash
+# Configuration des services
 NEXT_PUBLIC_IA_SERVICE_URL=http://localhost:9000
 NEXT_PUBLIC_IMAGE_SERVICE_URL=http://localhost:5002
 NEXT_PUBLIC_BDD_SERVICE_URL=http://localhost:9002
 NEXT_PUBLIC_PRINTIFY_SERVICE_URL=http://localhost:3004
 NEXT_PUBLIC_PAYMENT_SERVICE_URL=http://localhost:9001
 
-# Application
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+# Configuration Clerk (Authentification)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+
+# Configuration Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+
+# Configuration Stripe
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_SECRET_KEY=sk_test_...
+
+# Configuration Stability AI
+STABILITY_API_KEY=sk-...
 ```
 
-## 🎨 Fonctionnalités Frontend
+### **🔐 Gestion des secrets avec Infisical**
 
-### 🔐 Authentification
-- Connexion/déconnexion avec Clerk
-- Protection des routes
-- Gestion des sessions utilisateur
+```bash
+# Lister les variables configurées
+infisical secrets ls --env=dev --path=/front
 
-### 🎨 Génération d'Images
-- Interface de saisie de prompts
-- Options de génération (résolution, étapes, etc.)
-- Prévisualisation en temps réel
-- Historique des générations
+# Ajouter une nouvelle variable
+infisical secrets set NEXT_PUBLIC_IA_SERVICE_URL=http://localhost:9000 --env=dev --path=/front
 
-### 📚 Gestion des Images
-- Galerie des images générées
-- Filtrage et recherche
-- Actions (télécharger, supprimer, partager)
-- Pagination
+# Mettre à jour une variable
+infisical secrets set NEXT_PUBLIC_IA_SERVICE_URL=https://new-url.com --env=dev --path=/front
 
-### 🛍️ Création de Produits
-- Sélection d'image générée
-- Choix du type de produit (T-shirt, mug, etc.)
-- Prévisualisation du produit
-- Création via Printify
+# Supprimer une variable
+infisical secrets delete NEXT_PUBLIC_IA_SERVICE_URL --env=dev --path=/front
+```
 
-### 💰 Système de Crédits
-- Affichage des crédits disponibles
-- Achat de crédits via Stripe
-- Historique des transactions
+## 🧪 **Tests**
 
-### 📧 Notifications
+### **Tests avec Infisical**
+```bash
+# Tests avec variables Infisical
+npm run test:infisical
+
+# Tests de couverture avec Infisical
+npm run test:coverage:infisical
+
+# Tests en mode watch avec Infisical
+npm run test:watch:infisical
+```
+
+### **Tests standard**
+```bash
+# Tests unitaires
+npm test
+
+# Tests de couverture
+npm run test:coverage
+
+# Tests en mode watch
+npm run test:watch
+```
+
+## 🔄 **Déploiement**
+
+### **Déploiement avec Infisical**
+```bash
+# Build avec Infisical
+npm run build:infisical
+
+# Démarrage avec Infisical
+npm run start:infisical
+```
+
+### **Déploiement standard**
+```bash
+# Build standard
+npm run build
+
+# Démarrage standard
+npm run start
+```
+
+## 📧 Notifications
 - Notifications automatiques par email
 - Confirmation de génération d'image
 - Confirmation de création de produit
-
 
 ## 🔧 Communication avec les Services
 
@@ -274,7 +339,6 @@ const response = await fetch('/api/payment/create-session', {
 - **Tablette** : Adaptation pour écrans moyens
 - **Desktop** : Interface complète pour grands écrans
 
-
 ## 📊 Gestion d'État
 
 ### React Hooks
@@ -317,3 +381,43 @@ export function UserCreditsProvider({ children }: { children: React.ReactNode })
   )
 }
 ```
+
+## 🔐 **Sécurité avec Infisical**
+
+### **Avantages d'Infisical**
+- **Gestion centralisée** des secrets
+- **Chiffrement** des variables sensibles
+- **Synchronisation** entre équipes
+- **Audit trail** des modifications
+- **Intégration** avec les outils de déploiement
+
+### **Bonnes pratiques**
+- **Ne jamais commiter** de tokens ou clés API
+- **Utiliser Infisical** pour tous les secrets
+- **Rotation régulière** des clés
+- **Accès limité** aux secrets sensibles
+
+## 🚀 **Évolution future**
+
+- [x] **Migration vers Infisical** ✅
+- [x] **Architecture microservices** ✅
+- [x] **Interface moderne** ✅
+- [ ] Support multi-langues
+- [ ] Mode hors ligne
+- [ ] PWA (Progressive Web App)
+- [ ] Analytics avancés
+- [ ] Tests E2E
+
+## 🎉 **Statut actuel**
+
+**✅ FRONTEND OPÉRATIONNEL AVEC INFISICAL**
+
+- **Configuration** : Gestion sécurisée des secrets via Infisical
+- **Architecture** : Microservices bien intégrés
+- **Interface** : Moderne et responsive
+- **Tests** : Couverture complète
+- **Déploiement** : Prêt pour la production
+
+---
+
+**🎨 Le frontend Imagink est maintenant entièrement configuré avec Infisical pour une gestion sécurisée des variables d'environnement !**
