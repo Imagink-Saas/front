@@ -22,7 +22,5 @@ jest.mock("next/image", () => ({
 }));
 
 // JSDOM helpers for Blob URLs used by components
-// @ts-expect-error augment global URL
 global.URL.createObjectURL = jest.fn(() => "blob:mock");
-// @ts-expect-error augment global URL
 global.URL.revokeObjectURL = jest.fn();

@@ -11,7 +11,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "dev:infisical": "INFISICAL_TOKEN=\"st.72dc82a3-8735-438b-85fa-58f7c7d3cf8d.032a259cf84495e0717ee1998b13c078.ad1080a1dfa5c471ce65a36db60130e8\" infisical run --env=dev --path=/front -- npm run dev",
-
+    "build:infisical": "INFISICAL_TOKEN=\"st.72dc82a3-8735-438b-85fa-58f7c7d3cf8d.032a259cf84495e0717ee1998b13c078.ad1080a1dfa5c471ce65a36db60130e8\" infisical run --env=dev --path=/front -- npm run build",
     "start:infisical": "infisical run --env=dev --path=/front -- npm run start"
   },
   "dependencies": {

@@ -58,7 +58,7 @@ jobs:
         run: npm ci
 
       - name: 🏗️ Build de production
-        run: npm run build
+        run: npm run build:infisical
 
       - name: 🔍 Vérification du build
         run: |
