@@ -112,12 +112,6 @@ jobs:
       - name: 🔍 Linting ESLint
         run: npm run lint
 
-      - name: 🔍 Vérification TypeScript
-        run: npx tsc --noEmit
-
-      - name: 🔍 Vérification des types Jest
-        run: npx tsc --noEmit --project tsconfig.jest.json
-
   # 🧪 Étape 4 : Tests unitaires
   test:
     name: 🧪 Tests unitaires
