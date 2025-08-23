@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from "react";
 import {
   ShoppingCart,
-  Upload,
+  // Upload, // Non utilisé
   Package,
-  Palette,
+  // Palette, // Non utilisé
   DollarSign,
   Check,
   ArrowLeft,

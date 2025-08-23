@@ -1,0 +1,144 @@
+name: 🚀 CI Frontend - Tests, Lint & Build
+
+on:
+  push:
+    branches: [main, develop, feature/*]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  # 🔍 Étape 1 : Vérification basique
+  basic-check:
+    name: 🔍 Vérification basique
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📦 Installation des dépendances
+        run: npm ci
+
+      - name: ✅ Vérification de l'installation
+        run: |
+          echo "✅ Vérification de l'installation :"
+          echo "📁 Dossier courant : $(pwd)"
+          echo "📦 Node modules : $(ls -la node_modules | wc -l) éléments"
+          echo "🔧 Version Node : $(node --version)"
+          echo "📦 Version npm : $(npm --version)"
+          echo "📁 Fichiers du projet :"
+          ls -la
+
+  # 🏗️ Étape 2 : Build et compilation
+  build:
+    name: 🏗️ Build & Compilation
+    runs-on: ubuntu-latest
+    needs: [basic-check]
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📦 Installation des dépendances
+        run: npm ci
+
+      - name: 🏗️ Build de production
+        run: npm run build
+
+      - name: 🔍 Vérification du build
+        run: |
+          echo "📁 Vérification des fichiers générés :"
+          ls -la .next/
+          echo "📊 Taille du build :"
+          du -sh .next/
+          echo "🔍 Vérification des chunks :"
+          ls -la .next/static/chunks/ || echo "Aucun chunk trouvé"
+
+      - name: ✅ Validation du build
+        run: |
+          if [ -d ".next" ]; then
+            echo "✅ Build réussi - dossier .next créé"
+            if [ -f ".next/BUILD_ID" ]; then
+              echo "✅ BUILD_ID généré : $(cat .next/BUILD_ID)"
+            fi
+          else
+            echo "❌ Build échoué - dossier .next manquant"
+            exit 1
+          fi
+
+  # 🔍 Étape 3 : Analyse statique
+  lint:
+    name: 🔍 Analyse statique
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📦 Installation des dépendances
+        run: npm ci
+
+      - name: 🔍 Linting ESLint
+        run: npm run lint
+
+      - name: 🔍 Vérification TypeScript
+        run: npx tsc --noEmit
+
+      - name: 🔍 Vérification des types Jest
+        run: npx tsc --noEmit --project tsconfig.jest.json
+
+  # 🧪 Étape 4 : Tests unitaires
+  test:
+    name: 🧪 Tests unitaires
+    runs-on: ubuntu-latest
+    needs: [lint]
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📦 Installation des dépendances
+        run: npm ci
+
+      - name: 🧪 Exécution des tests Jest
+        run: npm test -- --coverage --watchAll=false
+
+      - name: 📊 Vérification de la couverture
+        run: |
+          echo "📊 Couverture des tests :"
+          if [ -f "coverage/lcov-report/index.html" ]; then
+            echo "✅ Rapport de couverture généré"
+            echo "📁 Dossier coverage créé"
+            ls -la coverage/
+          else
+            echo "❌ Rapport de couverture manquant"
+            exit 1
+          fi

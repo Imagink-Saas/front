@@ -35,11 +35,13 @@ jest.mock("@/components/Testimonials", () => {
 
 // Mock de Next.js Link pour éviter les erreurs de rendu
 jest.mock("next/link", () => {
-  return ({ children, href, className, ...props }: any) => (
+  const MockLink = ({ children, href, className, ...props }: any) => (
     <a href={href} className={className} {...props}>
       {children}
     </a>
   );
+  MockLink.displayName = "MockLink";
+  return MockLink;
 });
 
 describe("Page d'accueil", () => {

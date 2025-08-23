@@ -4,7 +4,7 @@ import CreateImage from "../CreateImage";
 
 // Mock de Next.js Image pour éviter les erreurs de rendu
 jest.mock("next/image", () => {
-  return ({ src, alt, width, height, className, ...props }: any) => (
+  const MockImage = ({ src, alt, width, height, className, ...props }: any) => (
     <img
       src={src}
       alt={alt}
@@ -14,6 +14,8 @@ jest.mock("next/image", () => {
       {...props}
     />
   );
+  MockImage.displayName = "MockImage";
+  return MockImage;
 });
 
 describe("CreateImage", () => {
