@@ -148,3 +148,42 @@ jobs:
             echo "❌ Rapport de couverture manquant"
             exit 1
           fi
+
+  # 📦 Étape 5 : Package Docker
+  package:
+    name: 📦 Package Docker
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📦 Installation des dépendances
+        run: npm ci
+
+      - name: 🔧 Installation d'Infisical CLI
+        run: npm install -g @infisical/cli
+
+      - name: 🏗️ Build avec Infisical
+        run: npm run build:infisical
+
+      - name: 🐳 Build Docker
+        run: |
+          echo "🔨 Construction de l'image Docker..."
+          docker build -t frontend:${{ github.sha }} .
+          echo "✅ Image Docker construite"
+          docker images frontend:test
+
+      - name: ✅ Test Docker
+        run: |
+          echo "🧪 Test de l'image Docker..."
+          docker run --rm frontend:${{ github.sha }} node --version
+          docker run --rm frontend:${{ github.sha }} infisical --version
+          echo "✅ Image Docker fonctionnelle"
