@@ -22,7 +22,7 @@ ARG INFISICAL_ENV=dev
 ARG INFISICAL_PATH=/front
 
 # Build de l'application
-RUN infisical run --env=$INFISICAL_ENV --path=$INFISICAL_PATH -- npm run build
+RUN INFISICAL_TOKEN=$INFISICAL_TOKEN infisical run --env=$INFISICAL_ENV --path=$INFISICAL_PATH -- npm run build
 
 # Image de production
 FROM node:20-alpine AS runner
