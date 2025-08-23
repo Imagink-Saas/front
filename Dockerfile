@@ -38,5 +38,5 @@ COPY --from=builder /app/node_modules ./node_modules
 # Exposer le port
 EXPOSE 3000
 
-# Commande de démarrage (sans Infisical)
-CMD ["npm", "start"]
+# Commande de démarrage (avec avec Infisical)
+CMD ["infisical", "run", "--env=dev", "--path=/front", "--", "npm", "start"]
