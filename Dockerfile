@@ -27,6 +27,10 @@ RUN INFISICAL_TOKEN="st.72dc82a3-8735-438b-85fa-58f7c7d3cf8d.032a259cf84495e0717
 # Image de production
 FROM node:20-alpine AS runner
 
+# Installer Infisical CLI
+RUN npm install -g @infisical/cli
+
+# Définir le répertoire de travail
 WORKDIR /app
 
 # Copier les fichiers nécessaires depuis le builder
