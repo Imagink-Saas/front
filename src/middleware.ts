@@ -13,11 +13,16 @@ export default clerkMiddleware(async (auth, request) => {
   }
 });
 
+// ✅ ignore explicitement l’optimizer et les assets
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
+    // toujours exécuter sur les routes app, sauf assets et fichiers statiques
+    "/((?!.+\\.[\\w]+$|_next).*)",
     "/(api|trpc)(.*)",
+    // et surtout, ignorer explicitement :
+    // (ces lignes garantissent que Clerk ne verra pas les assets)
+    // NB: ces lignes ne sont pas des matchers "positifs", mais des exclusions
   ],
+  // alternative (plus claire) si tu veux explicitement ignorer :
+  // ignoredRoutes: ["/_next/static(.*)", "/_next/image(.*)", "/favicon.ico", "/images(.*)"],
 };
