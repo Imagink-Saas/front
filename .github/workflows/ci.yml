@@ -148,3 +148,43 @@ jobs:
             echo "❌ Rapport de couverture manquant"
             exit 1
           fi
+
+  # 🔒 Étape 5 : Analyse de sécurité
+  security:
+    name: 🔒 Analyse de sécurité
+    runs-on: ubuntu-latest
+    needs: [test]
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: 📦 Installation des dépendances
+        run: npm ci
+
+      - name: 🔧 Installation d'Infisical CLI
+        run: npm install -g @infisical/cli
+
+      - name: 🔍 Audit de sécurité npm
+        run: npm audit --audit-level=moderate
+
+      - name: 📊 Vérification des vulnérabilités
+        run: |
+          echo "🔍 Vérification des vulnérabilités :"
+          npm audit --json > audit-report.json || true
+          echo "📁 Rapport d'audit généré"
+          ls -la audit-report.json
+          
+          # Vérifier le niveau de vulnérabilités
+          if npm audit --audit-level=high 2>/dev/null; then
+            echo "❌ Vulnérabilités critiques détectées"
+            exit 1
+          else
+            echo "✅ Aucune vulnérabilité critique"
+          fi
