@@ -1,42 +1,40 @@
-# Utiliser l'image Node.js officielle
-FROM node:20-alpine AS builder
-
-# Installer Infisical CLI
-RUN npm install -g @infisical/cli
-
-# Définir le répertoire de travail
+# syntax=docker/dockerfile:1.6
+FROM node:20-alpine AS deps
 WORKDIR /app
-
-# Copier les fichiers de dépendances
 COPY package*.json ./
+# Cache npm pour accélérer les builds (BuildKit)
+RUN --mount=type=cache,target=/root/.npm npm ci
 
-# Installer les dépendances
-RUN npm ci
-
-# Copier le code source
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN npm i -g @infisical/cli
 
-# Build de l'application avec Infisical (au moment du build)
-ARG INFISICAL_TOKEN
+# Paramètres non sensibles
 ARG INFISICAL_ENV=dev
 ARG INFISICAL_PATH=/front
+ENV INFISICAL_ENV=$INFISICAL_ENV \
+    INFISICAL_PATH=$INFISICAL_PATH \
+    NODE_ENV=production
 
-# Build de l'application
-RUN INFISICAL_TOKEN="st.72dc82a3-8735-438b-85fa-58f7c7d3cf8d.032a259cf84495e0717ee1998b13c078.ad1080a1dfa5c471ce65a36db60130e8" infisical run --env=dev --path=/front -- npm run build
+# ✅ CI: lit le token via secret BuildKit  (/run/secrets/infisical_token)
+# ✅ Render: lit le token via variable d'env INFISICAL_TOKEN
+RUN --mount=type=secret,id=infisical_token \
+    set -eu; \
+    TOK="${INFISICAL_TOKEN:-}"; \
+    if [ -z "$TOK" ] && [ -f /run/secrets/infisical_token ]; then TOK="$(cat /run/secrets/infisical_token)"; fi; \
+    if [ -z "$TOK" ]; then echo "❌ INFISICAL_TOKEN manquant"; exit 1; fi; \
+    INFISICAL_TOKEN="$TOK" infisical run --env="$INFISICAL_ENV" --path="$INFISICAL_PATH" -- npm run build
 
-# Image de production
+# (optionnel) Next.js 'standalone' => image plus légère (si activé dans next.config.js)
 FROM node:20-alpine AS runner
-
 WORKDIR /app
-
-# Copier les fichiers nécessaires depuis le builder
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/node_modules ./node_modules
-
-# Exposer le port
+ENV NODE_ENV=production
+COPY package*.json ./
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+COPY --from=deps /app/node_modules ./node_modules
 EXPOSE 3000
-
-# Commande de démarrage (sans Infisical)
-CMD ["npm", "start"]
+# Assure-toi d'avoir:  "start": "next start -p $PORT"
+CMD ["npm","start"]
