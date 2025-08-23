@@ -28,6 +28,9 @@ jobs:
       - name: 📦 Installation des dépendances
         run: npm ci
 
+      - name: 🔧 Installation d'Infisical CLI
+        run: npm install -g @infisical/cli
+
       - name: ✅ Vérification de l'installation
         run: |
           echo "✅ Vérification de l'installation :"
@@ -56,6 +59,9 @@ jobs:
 
       - name: 📦 Installation des dépendances
         run: npm ci
+
+      - name: 🔧 Installation d'Infisical CLI
+        run: npm install -g @infisical/cli
 
       - name: 🏗️ Build de production
         run: npm run build:infisical
@@ -100,6 +106,9 @@ jobs:
       - name: 📦 Installation des dépendances
         run: npm ci
 
+      - name: 🔧 Installation d'Infisical CLI
+        run: npm install -g @infisical/cli
+
       - name: 🔍 Linting ESLint
         run: npm run lint
 
@@ -127,6 +136,9 @@ jobs:
 
       - name: 📦 Installation des dépendances
         run: npm ci
+
+      - name: 🔧 Installation d'Infisical CLI
+        run: npm install -g @infisical/cli
 
       - name: 🧪 Exécution des tests Jest
         run: npm test -- --coverage --watchAll=false
