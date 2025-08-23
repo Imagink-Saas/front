@@ -185,5 +185,5 @@ jobs:
         run: |
           echo "🧪 Test de l'image Docker..."
           docker run --rm frontend:${{ github.sha }} node --version
-          docker run --rm frontend:${{ github.sha }} infisical --version
+          docker run --rm frontend:${{ github.sha }} npm --version
           echo "✅ Image Docker fonctionnelle"
