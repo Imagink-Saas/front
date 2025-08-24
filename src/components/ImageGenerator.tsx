@@ -155,7 +155,7 @@ export default function ImageGenerator() {
         >
           <div className="flex items-center gap-2">
             <BiImageAlt className="text-xl" />
-            <span>Décrivez votre image</span>
+            <span>Décrivez votre image en anglais</span>
           </div>
         </label>
         <div className="flex gap-2">
